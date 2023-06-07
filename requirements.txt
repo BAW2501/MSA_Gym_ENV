@@ -1,0 +1,4 @@
+gymnasium
+stable_baselines3
+numpy
+pyMSA
