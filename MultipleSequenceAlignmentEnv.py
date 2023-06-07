@@ -9,6 +9,7 @@ class MultipleSequenceAlignmentEnv(gym.Env):
     alphabet = 'ARNDCQEGHILKMFPSTWYV'
     def __init__(self, sequences):
         super(MultipleSequenceAlignmentEnv, self).__init__()
+        self.score = 0
         self.state = None
         self.gap_counts = None
         self.encoded_sequences = None
@@ -35,12 +36,18 @@ class MultipleSequenceAlignmentEnv(gym.Env):
         for i, sequence in enumerate(self.sequences):
             self.state[i, :len(sequence)] = np.arange(1, len(sequence)+1)
             self.encoded_sequences[i, :len(sequence), :] = encoder(sequence,encoding='OneHot_20D')
+        self.score = self._calculate_reward()
         return self._get_observation(),{}
            
     def step(self, action):
         seq_idx, pos = action
         self._insert_gap(seq_idx, pos)
         reward = self._calculate_reward()
+        print('reward is ' ,reward)
+        diff = reward - self.score
+        self.score = reward
+        reward = diff
+        
         done = np.sum(self.gap_counts) == self.n_sequences # temporary
         info = {}
         #observation, reward, terminated, False, info
@@ -85,11 +92,23 @@ class MultipleSequenceAlignmentEnv(gym.Env):
         
 if __name__ == "__main__":
 
-    env = MultipleSequenceAlignmentEnv(['MCRIAGGRGTLLPLLAALLQA',
-                                        'MSFPCKFVASFLLIFNVSSKGA',
-                                        'MPGKMVVILGASNILWIMF'])
+    env = MultipleSequenceAlignmentEnv(['SGVPDR',
+                                    'GVPDR',
+                                    'VPDR',
+                                    'SGVPD'
+                                    ])
     obs = env.reset()
-    action = env.action_space.sample()
-    obs, reward, done, info = env.step(action)
-    print(action, reward)
-    env.print_mat_string_alignment()
+    print(env._calculate_reward())
+    
+    # action = env.action_space.sample()
+    # obs, reward, done,_, info = env.step(action)
+    # print(action, reward)
+    # env.print_mat_string_alignment()
+    actions = [
+        (1,0),(2,0),(2,0),
+    ]
+    for action in actions:
+        obs, reward, done,_, info = env.step(action)
+        print(action, reward)
+        env.print_mat_string_alignment()
+        print()
