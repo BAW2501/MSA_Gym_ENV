@@ -43,7 +43,6 @@ class MultipleSequenceAlignmentEnv(gym.Env):
         seq_idx, pos = action
         self._insert_gap(seq_idx, pos)
         reward = self._calculate_reward()
-        print('reward is ' ,reward)
         diff = reward - self.score
         self.score = reward
         reward = diff
@@ -99,14 +98,7 @@ if __name__ == "__main__":
                                     ])
     obs = env.reset()
     print(env._calculate_reward())
-    
-    # action = env.action_space.sample()
-    # obs, reward, done,_, info = env.step(action)
-    # print(action, reward)
-    # env.print_mat_string_alignment()
-    actions = [
-        (1,0),(2,0),(2,0),
-    ]
+    actions = [(1,0),(2,0),(2,0),]
     for action in actions:
         obs, reward, done,_, info = env.step(action)
         print(action, reward)

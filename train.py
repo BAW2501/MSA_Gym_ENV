@@ -1,30 +1,28 @@
 from MultipleSequenceAlignmentEnv import MultipleSequenceAlignmentEnv
 
-from stable_baselines3 import A2C
+from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
 
 
 # Create environment
-env = MultipleSequenceAlignmentEnv(['MCRIAGGRGTLLPLLAALLQA',
-                                    'MSFPCKFVASFLLIFNVSSKGA',
-                                    'MPGKMVVILGASNILWIMF'])
+env = MultipleSequenceAlignmentEnv(['SGVPDR','GVPDR','VPDR','SGVPD'])
 obs = env.reset()
 
 # Instantiate the agent
-model = A2C("MlpPolicy", env, verbose=1)
+model = PPO("MlpPolicy", env, verbose=1)
 # Train the agent and display a progress bar
-model.learn(total_timesteps=int(2e5), progress_bar=True)
+model.learn(total_timesteps=int(1e4), progress_bar=True)
+# mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=10)
+# model.save(f"Models/ppo_msa{mean_reward:.2f}")
 
-# Evaluate the agent
-# NOTE: If you use wrappers with your environment that modify rewards,
-#       this will be reflected here. To evaluate with original rewards,
-#       wrap environment in a "Monitor" wrapper before other wrappers.
-mean_reward, std_reward = evaluate_policy(model, model.get_env(), n_eval_episodes=10)
+# # del model # remove to demonstrate saving and loading
+# model = PPO.load(f"Models/ppo_msa{mean_reward:.2f}")
+obs,_ = env.reset()
+print(obs.shape)
+done = False
+while not done:
+    action, _ = model.predict(obs, deterministic=True)
+    obs, reward, done,_, info = env.step(action)
+    env.render()
+    print(action, reward,'\n')
 
-# Enjoy trained agent
-vec_env = model.get_env()
-obs = vec_env.reset()
-for _ in range(1000):
-    action, _states = model.predict(obs, deterministic=True)
-    obs, rewards, dones, info = vec_env.step(action)
-    vec_env.render()
