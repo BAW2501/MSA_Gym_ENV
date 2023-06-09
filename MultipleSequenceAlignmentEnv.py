@@ -21,7 +21,6 @@ def get_random_shuffled_sequences(data,seed=0):
     #np.random.seed(seed)
     number_of_sequences = len(data)
     index = np.random.choice(range(number_of_sequences))
-    print(index)
     sequences = data[index]
     np.random.shuffle(sequences)
     return sequences
