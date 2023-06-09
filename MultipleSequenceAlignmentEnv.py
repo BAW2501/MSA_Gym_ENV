@@ -4,10 +4,33 @@ from pymsa import MSA, SumOfPairs
 from pymsa import Blosum62
 from Encode import encoder
 
+training_data=[
+        ['SGVPDR','GVPDR','VPDR','SGVPD'],
+        ['TFGGGT','FGGGT','GGGT','TFGGG'],
+        ['DSAVYY','SAVYF','AVYF','VYY'],
+        ['VPDRFS','PDRFS','DRFS','RFS'],
+        ['DQASIS','QASIS','ASIS','SIS'],
+        ['LYTLSS','YTLSS','TLSS','LSS'],
+        ['KLEIKR','LEIKR','EIKR','IKR'],
+        ['SLPVSL','LPVSL','PVSL','VSL'],
+        ['LGCLVK','GCLVK','CLVK','LVK'],
+        ['QFGRCS','FGRCS','GRCS','RCS'],       
+    ]
+
+def get_random_shuffled_sequences(data,seed=0):
+    #np.random.seed(seed)
+    number_of_sequences = len(data)
+    index = np.random.choice(range(number_of_sequences))
+    print(index)
+    sequences = data[index]
+    np.random.shuffle(sequences)
+    return sequences
+    
+
 
 class MultipleSequenceAlignmentEnv(gym.Env):
     alphabet = 'ARNDCQEGHILKMFPSTWYV'
-    def __init__(self, sequences):
+    def __init__(self, sequences=get_random_shuffled_sequences(training_data)):
         super(MultipleSequenceAlignmentEnv, self).__init__()
         self.score = 0
         self.state = None
@@ -26,8 +49,12 @@ class MultipleSequenceAlignmentEnv(gym.Env):
         
         
 
-    def reset(self,seed=None):
-        
+    def reset(self,seed=0):
+        self.sequences = get_random_shuffled_sequences(training_data,seed)
+        self.n_sequences = len(self.sequences)
+        self.n_characters = len(self.alphabet) 
+        self.max_length = max(len(sequence) for sequence in self.sequences)
+        self.score = 0
         encoded_shape = (self.n_sequences, self.max_length, self.n_characters)
         self.encoded_sequences = np.zeros(encoded_shape, dtype=np.float32)          
         self.state = np.zeros([self.n_sequences, self.max_length], dtype=np.int_)
@@ -91,11 +118,8 @@ class MultipleSequenceAlignmentEnv(gym.Env):
         
 if __name__ == "__main__":
 
-    env = MultipleSequenceAlignmentEnv(['SGVPDR',
-                                    'GVPDR',
-                                    'VPDR',
-                                    'SGVPD'
-                                    ])
+
+    env = MultipleSequenceAlignmentEnv()
     obs = env.reset()
     print(env._calculate_reward())
     actions = [(1,0),(2,0),(2,0),]
