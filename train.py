@@ -5,7 +5,7 @@ from stable_baselines3.common.evaluation import evaluate_policy
 
 
 # Create environment
-env = MultipleSequenceAlignmentEnv(['SGVPDR','GVPDR','VPDR','SGVPD'])
+env = MultipleSequenceAlignmentEnv()
 obs = env.reset()
 
 # Instantiate the agent
@@ -19,7 +19,6 @@ model.save(f"Models/ppo_msa{mean_reward:.2f}")
 #model = PPO.load(f"Models/ppo_msa{mean_reward:.2f}")
 # model = PPO.load("Models/ppo_msa52.00")
 obs,_ = env.reset()
-print(obs.shape)
 done = False
 while not done:
     action, _ = model.predict(obs, deterministic=True)
