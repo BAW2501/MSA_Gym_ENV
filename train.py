@@ -2,10 +2,15 @@ from MultipleSequenceAlignmentEnv import MultipleSequenceAlignmentEnv
 
 from stable_baselines3 import PPO
 from stable_baselines3.common.evaluation import evaluate_policy
+from stable_baselines3.common.env_checker import check_env
 
 
 # Create environment
 env = MultipleSequenceAlignmentEnv()
+print('env created')
+# It will check your custom environment and output additional warnings if needed
+check_env(env)
+print('env checked')
 obs = env.reset()
 
 # Instantiate the agent
