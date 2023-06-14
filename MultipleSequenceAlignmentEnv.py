@@ -79,7 +79,7 @@ class MultipleSequenceAlignmentEnv(gym.Env):
 
     def _get_observation(self):
         normalized_gap_counts = self.gap_counts / self.max_length
-        return np.concatenate([self.encoded_sequences, normalized_gap_counts[:, :, np.newaxis]], axis=2)
+        return np.concatenate([self.encoded_sequences, normalized_gap_counts[:, :, np.newaxis]], axis=2,dtype=np.float32)
 
     def _insert_gap(self, seq_idx, pos):
         # inserting a gap in the sequence seq_idx at position pos
