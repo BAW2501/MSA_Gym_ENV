@@ -19,3 +19,6 @@ dist/
 
 # Ignore all zip files
 *.zip
+
+# Ignore .idea files
+.idea/
