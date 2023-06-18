@@ -1,7 +1,6 @@
 import gymnasium as gym
 import numpy as np
-from pymsa import MSA, SumOfPairs
-from pymsa import Blosum62
+from pymsa import MSA, SumOfPairs,Blosum62
 from Encode import encoder
 
 training_data = [
@@ -101,9 +100,9 @@ class MultipleSequenceAlignmentEnv(gym.Env):
         for i, seq in enumerate(self.sequences):
             for j, base in enumerate(seq):
                 alignment[i, self.state[i, j] - 1] = base
-            alignments_string.append(''.join(alignment[i]))
+            #alignments_string.append(''.join(alignment[i]))
 
-        return alignments_string
+        return alignment #alignments_string
 
     def print_mat_string_alignment(self):
         aligns = self.mat_string_alignment()
