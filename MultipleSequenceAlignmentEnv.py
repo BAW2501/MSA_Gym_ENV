@@ -71,7 +71,7 @@ class MultipleSequenceAlignmentEnv(gym.Env):
         self.score = _reward
         _reward = diff
 
-        _done = np.sum(self.gap_counts) == self.n_sequences  # temporary
+        _done = bool(np.sum(self.gap_counts) == self.n_sequences)  # temporary
         _info = {}
         # observation, reward, terminated, False, info
         return self._get_observation(), _reward, _done, False, _info
